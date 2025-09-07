@@ -1,0 +1,127 @@
+:root {
+  --c-a: hsl(190 100% 70%);
+  --c-b: hsl(275 100% 70%);
+  --c-c: hsl(113 100% 70%);
+  --c-collector: hsl(48 100% 60%); /* жёлтый */
+  --badge: hsl(195 100% 82%);
+  --dim: #bfc8d2;
+  --ink: #e6eef6;
+}
+
+/* сопоставление цвета сервиса в --svc (касается рамки, точек, подписей) */
+.svc--a .svc-frame,
+.svc--a .dot,
+.svc--a .span-label {
+  --svc: var(--c-a);
+}
+.svc--b .svc-frame,
+.svc--b .dot,
+.svc--b .span-label {
+  --svc: var(--c-b);
+}
+.svc--c .svc-frame,
+.svc--c .dot,
+.svc--c .span-label {
+  --svc: var(--c-c);
+}
+.svc--collector .svc-frame,
+.svc--collector .dot,
+.svc--collector .span-label {
+  --svc: var(--c-collector);
+}
+
+/* заголовки блоков */
+.svc-title {
+  font: 700 14px/1 'EuropaNuova', ui-sans-serif, system-ui;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  fill: var(--dim);
+}
+
+/* рамки: базовое и активное состояние (единые для сервисов и коллектора) */
+.svc-frame {
+  fill: rgba(8, 13, 20, 0.52);
+  stroke-width: 3;
+  stroke: #203040;
+  filter: drop-shadow(0 0 0 transparent);
+  transition: filter 0.25s ease, stroke 0.25s ease, opacity 0.25s;
+  opacity: 0.75;
+  will-change: filter, stroke, opacity;
+}
+.svc.active .svc-frame {
+  stroke: var(--svc);
+  opacity: 1;
+  filter: drop-shadow(0 0 8px color-mix(in oklab, var(--svc) 60%, transparent))
+    drop-shadow(0 0 22px color-mix(in oklab, var(--svc) 40%, transparent));
+}
+
+/* точки-спаны */
+.dot {
+  fill: #1b2735;
+  stroke: none;
+  filter: none;
+  opacity: 0.6;
+  transition: transform 0.2s ease, filter 0.2s ease, fill 0.2s ease,
+    opacity 0.2s;
+}
+.dot.active {
+  fill: #fff;
+  opacity: 1;
+  filter: drop-shadow(0 0 8px color-mix(in oklab, var(--svc) 65%, transparent))
+    drop-shadow(0 0 18px color-mix(in oklab, var(--svc) 45%, transparent));
+}
+/* точка в коллекторе — тёплая заливка при активации */
+.collector-dot.active {
+  fill: #fff3b0;
+}
+
+/* подписи spanID */
+.span-label {
+  font: 700 11px/1 'EuropaNuova', ui-sans-serif, system-ui;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  fill: color-mix(in oklab, var(--svc, var(--badge)) 80%, white 20%);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.span-label.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* traceID-бейдж над рамкой только у активного блока */
+.trace-badge {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.svc .trace-badge {
+  transform: translateY(-16px);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.svc.active .trace-badge {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.badge {
+  fill: rgba(0, 0, 0, 0.55);
+  stroke: var(--badge);
+  stroke-width: 1.5;
+  filter: drop-shadow(
+    0 0 8px color-mix(in oklab, var(--badge) 55%, transparent)
+  );
+}
+.badge-text {
+  font: 800 12px/1 'EuropaNuova', ui-sans-serif, system-ui;
+  fill: color-mix(in oklab, var(--badge) 85%, white 15%);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* заголовок коллектора можно сделать ярче */
+.svc--collector .svc-title {
+  fill: #e9f4ff;
+}

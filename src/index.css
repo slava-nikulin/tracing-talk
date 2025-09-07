@@ -1,0 +1,40 @@
+@import 'tailwindcss';
+
+/* @font-face {
+  font-family: 'EuropaNuova';
+  src: url('/fonts/Europa_Nuova_Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'EuropaNuova';
+  src: url('/fonts/Europa_Nuova_Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+} */
+
+/* Базовая типографика */
+:root {
+  color-scheme: dark;
+}
+body {
+  @apply bg-black text-white;
+  /* font-family: 'EuropaNuova', ui-sans-serif, system-ui; */
+}
+
+/* Ensure the Reveal container fills the viewport in embedded mode */
+html,
+body,
+#root {
+  height: 100%;
+}
+.reveal {
+  height: 100dvh;
+}
+
+.neon-soft {
+  text-shadow: 0 0 4px color-mix(in oklab, hsl(195 100% 82%) 55%, transparent),
+    0 0 10px color-mix(in oklab, hsl(195 100% 82%) 35%, transparent);
+}

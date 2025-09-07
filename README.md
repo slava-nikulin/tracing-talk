@@ -1,2 +1,3 @@
 # tracing-talk
-Presentation slides for a meetup talk on Distributed Tracing
+
+This repository hosts the slides for a technical meetup presentation about Distributed Tracing.

@@ -1,0 +1,91 @@
+:root {
+  --c-metrics: hsl(180 100% 65%);
+  --c-logs: hsl(270 100% 70%);
+  --c-traces: hsl(200 100% 70%);
+  --c-soft: hsl(195 100% 82%);
+}
+
+/* элемент с иконкой и подписью */
+.obs-item {
+  display: grid;
+  place-items: center;
+  gap: 0.6rem;
+}
+
+/* иконки — чистый SVG со свечением и лёгким пульсом */
+.obs-icon {
+  width: clamp(64px, 10vmin, 96px);
+  height: auto;
+  fill: none;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 6px color-mix(in oklab, var(--glow) 65%, transparent))
+    drop-shadow(0 0 16px color-mix(in oklab, var(--glow) 45%, transparent));
+  animation: iconPulse 2800ms ease-in-out infinite;
+}
+
+.obs-icon.metrics {
+  --glow: var(--c-metrics);
+  stroke: var(--glow);
+}
+.obs-icon.logs {
+  --glow: var(--c-logs);
+  stroke: var(--glow);
+}
+.obs-icon.traces {
+  --glow: var(--c-traces);
+  stroke: var(--glow);
+}
+
+/* подписи */
+.obs-label {
+  font: 700 clamp(14px, 2.2vmin, 18px) / 1.1 'EuropaNuova', ui-sans-serif,
+    system-ui;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--glow) 85%, white 15%);
+  text-shadow: 0 0 4px color-mix(in oklab, var(--glow) 40%, transparent),
+    0 0 10px color-mix(in oklab, var(--glow) 30%, transparent);
+  animation: labelPulse 3200ms ease-in-out infinite;
+}
+
+.obs-label.metrics {
+  --glow: var(--c-metrics);
+}
+.obs-label.logs {
+  --glow: var(--c-logs);
+}
+.obs-label.traces {
+  --glow: var(--c-traces);
+}
+
+/* анимации */
+@keyframes iconPulse {
+  0%,
+  100% {
+    opacity: 0.95;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+@keyframes labelPulse {
+  0%,
+  100% {
+    opacity: 0.9;
+    letter-spacing: 0.08em;
+  }
+  50% {
+    opacity: 1;
+    letter-spacing: 0.1em;
+  }
+}
+
+/* уважение к reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .obs-icon,
+  .obs-label {
+    animation: none;
+  }
+}

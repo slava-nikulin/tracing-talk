@@ -7,7 +7,8 @@ import RevealMarkdown from 'reveal.js/plugin/markdown/markdown.esm.js'
 import RevealHighlight from 'reveal.js/plugin/highlight/highlight.esm.js'
 // import 'reveal.js/dist/reset.css'
 import 'reveal.js/dist/reveal.css'
-import 'reveal.js/dist/theme/black.css'
+// import 'reveal.js/dist/theme/black.css'
+import 'reveal.js/plugin/highlight/monokai.css'
 
 type Props = { children: any }
 

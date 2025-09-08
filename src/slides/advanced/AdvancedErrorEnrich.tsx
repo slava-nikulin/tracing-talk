@@ -9,7 +9,8 @@ export default function AdvancedErrorEnrich() {
       }
     >
       <pre class="rounded-lg border border-zinc-600/60 bg-zinc-900/70 p-4 overflow-x-auto text-sky-100 text-sm text-left">
-        {`ctx, span := tracer.Start(ctx, "db.query")
+        <code data-trim data-line-numbers="6-14" class="language-go">
+          {`ctx, span := tracer.Start(ctx, "db.query")
 defer span.End()
 
 err := doQuery(ctx, q)
@@ -25,6 +26,7 @@ if err != nil {
   }
   return err
 }`}
+        </code>
       </pre>
     </SlideFrame>
   )

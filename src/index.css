@@ -4,28 +4,20 @@
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
 
-/* @font-face {
-  font-family: 'EuropaNuova';
-  src: url('/fonts/Europa_Nuova_Regular.ttf') format('truetype');
+@font-face {
+  font-family: 'verdana';
+  src: url('/fonts/Verdana.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
-@font-face {
-  font-family: 'EuropaNuova';
-  src: url('/fonts/Europa_Nuova_Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-} */
 
 /* Базовая типографика */
 :root {
   color-scheme: dark;
 }
 body {
-  /* @apply bg-black text-white; */
-  /* font-family: 'EuropaNuova', ui-sans-serif, system-ui; */
+  font-family: 'verdana', ui-sans-serif, system-ui;
 }
 
 /* Ensure the Reveal container fills the viewport in embedded mode */

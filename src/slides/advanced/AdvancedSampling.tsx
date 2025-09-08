@@ -12,7 +12,7 @@ export default function AdvancedSampling() {
       }
     >
       <div class="grid gap-4 md:grid-cols-2">
-        <ul class="space-y-2 text-neutral-100 text-base sm:text-lg text-left">
+        <ul class="space-y-2 text-neutral-100 text-base sm:text-lg text-left list-none leading-10">
           <li>
             <code class="px-2 py-0.5 bg-zinc-800/70 rounded">
               OTEL_TRACES_SAMPLER

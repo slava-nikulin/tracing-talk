@@ -9,7 +9,6 @@ export default function TracingArch() {
     let stop = false
     const $ = (s: string) => root.querySelector<HTMLElement>(s)!
     const add = (e: Element | null, c: string) => e && e.classList.add(c)
-    const rem = (e: Element | null, c: string) => e && e.classList.remove(c)
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
     // наглядный, медленный ритм
@@ -67,7 +66,6 @@ export default function TracingArch() {
         if (collectorVisible()) {
           await sleep(T_SERVICE_GAP)
           add($('.svc--collector'), 'active')
-          await sleep(T_SPAN * 2)
           add($('.collector-dot'), 'active')
         }
 
@@ -84,8 +82,6 @@ export default function TracingArch() {
     <SlideFrame
       title="Что такое Distributed Tracing"
       gradient="linear-gradient(160deg,#050507 0%,#101020 35%,#152030 65%,#050507 100%)"
-      transition="fade"
-      bgColor="#000000"
       notes={
         <>
           Trace — единый идентификатор всей цепочки. Span — отдельная операция с

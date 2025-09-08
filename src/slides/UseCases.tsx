@@ -6,8 +6,6 @@ export default function UseCases() {
     <SlideFrame
       title="Зачем нужен tracing"
       gradient="linear-gradient(160deg,#050507 0%,#101020 35%,#152030 65%,#050507 100%)"
-      transition="fade"
-      bgColor="#000000"
       notes={
         <>
           Коротко: bottlenecks → куда оптимизировать; MTTR↓ → быстрее
@@ -18,7 +16,7 @@ export default function UseCases() {
     >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid md:grid-cols-2 gap-8">
-          <ol class="list-disc list-outside pl-6 text-left text-xl space-y-5 text-amber-50">
+          <ol class="list-disc  marker:text-fuchsia-500 list-outside pl-6 text-left text-xl space-y-5 text-amber-50">
             <li>Поиск bottlenecks</li>
             <li>Снижение MTTR и ускорение RCA</li>
             <li>Прозрачность распределённых вызовов и границ сервисов</li>

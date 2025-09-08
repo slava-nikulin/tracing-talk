@@ -1,6 +1,10 @@
 import { onCleanup, onMount } from 'solid-js'
 import Reveal from 'reveal.js'
 import RevealNotes from 'reveal.js/plugin/notes/notes.esm.js'
+import RevealZoom from 'reveal.js/plugin/zoom/zoom.esm.js'
+import RevealSearch from 'reveal.js/plugin/search/search.esm.js'
+import RevealMarkdown from 'reveal.js/plugin/markdown/markdown.esm.js'
+import RevealHighlight from 'reveal.js/plugin/highlight/highlight.esm.js'
 import 'reveal.js/dist/reveal.css'
 // import 'reveal.js/dist/theme/black.css'
 
@@ -29,12 +33,13 @@ export default function RevealRoot(props: Props) {
     deck = new Reveal({
       embedded: true,
       hash: true,
-      transition: 'fade',
+      transition: 'slide',
       backgroundTransition: 'fade',
       slideNumber: true,
       autoPlayMedia: true,
-      plugins: [RevealNotes],
+      plugins: [RevealNotes, RevealZoom, RevealSearch, RevealMarkdown, RevealHighlight],
       width: 1024,
+      navigationMode: 'default',
     })
 
     // Attach listeners before initialize so we catch the initial ready event

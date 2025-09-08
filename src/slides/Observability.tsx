@@ -6,8 +6,6 @@ export default function Observability() {
     <SlideFrame
       title="Observability: три столпа"
       gradient="linear-gradient(160deg,#050507 0%,#101020 35%,#152030 65%,#050507 100%)"
-      transition="fade"
-      bgColor="#000000"
       notes={
         <>
           Metrics — тренды/SLO. Logs — детали. Traces — связи и латентность.

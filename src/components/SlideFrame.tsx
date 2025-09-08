@@ -19,7 +19,7 @@ export default function SlideFrame(props: SlideFrameProps) {
       props.gradient ??
       'linear-gradient(160deg,#050507 0%,#101020 35%,#152030 65%,#050507 100%)'
     sectionRef.setAttribute('data-background-gradient', g)
-    sectionRef.setAttribute('data-transition', props.transition ?? 'fade')
+    sectionRef.setAttribute('data-transition', props.transition ?? 'slide')
     sectionRef.setAttribute('data-background-color', props.bgColor ?? '#000000')
     if (props.backgroundTransition) {
       sectionRef.setAttribute(

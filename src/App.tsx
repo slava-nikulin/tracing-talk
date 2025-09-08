@@ -15,9 +15,9 @@ export default function App() {
       <Observability />
       <TracingArch />
       <UseCases />
+      <Tools />
       <Integration101 />
       <UsageExamples />
-      <Tools />
       <Advanced />
     </RevealRoot>
   )

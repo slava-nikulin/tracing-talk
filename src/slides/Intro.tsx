@@ -3,7 +3,7 @@ export default function Intro() {
 
   return (
     <section
-      data-transition="fade"
+      data-transition="slide"
       data-background-transition="fade"
       data-background-video={bg}
       data-background-video-loop

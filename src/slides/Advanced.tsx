@@ -1,13 +1,17 @@
-import SlideFrame from '../components/SlideFrame'
+import AdvancedSummary from './advanced/AdvancedSummary'
+import AdvancedSampling from './advanced/AdvancedSampling'
+import AdvancedEnv from './advanced/AdvancedEnv'
+import AdvancedErrorEnrich from './advanced/AdvancedErrorEnrich'
+import AdvancedSpanFilter from './advanced/AdvancedSpanFilter'
 
 export default function Advanced() {
   return (
-    <SlideFrame
-      title="Advanced: sampling"
-      gradient="linear-gradient(160deg,#050507 0%,#101020 35%,#152030 65%,#050507 100%)"
-      transition="fade"
-      bgColor="#000000"
-      notes={<></>}
-    ></SlideFrame>
+    <section>
+      <AdvancedSummary />
+      <AdvancedSampling />
+      <AdvancedSpanFilter />
+      <AdvancedErrorEnrich />
+      <AdvancedEnv />
+    </section>
   )
 }

@@ -3,7 +3,7 @@ import SlideFrame from '../../components/SlideFrame'
 export default function AdvancedErrorEnrich() {
   return (
     <SlideFrame
-      title="Обогащение span при ошибке (Go)"
+      title="Обогащение span"
       notes={
         <>RecordError + SetStatus + AddEvent; в логи — trace_id/span_id.</>
       }

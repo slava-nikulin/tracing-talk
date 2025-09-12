@@ -1,17 +1,17 @@
-import AdvancedSummary from './advanced/AdvancedSummary'
-import AdvancedSampling from './advanced/AdvancedSampling'
-import AdvancedEnv from './advanced/AdvancedEnv'
-import AdvancedErrorEnrich from './advanced/AdvancedErrorEnrich'
-import AdvancedSpanFilter from './advanced/AdvancedSpanFilter'
+import Summary from './advanced/Summary'
+import Sampling from './advanced/Sampling'
+import Env from './advanced/Env'
+import ErrorEnrich from './advanced/ErrorEnrich'
+import SpanFilter from './advanced/SpanFilter'
 
 export default function Advanced() {
   return (
     <section>
-      <AdvancedSummary />
-      <AdvancedSampling />
-      <AdvancedSpanFilter />
-      <AdvancedErrorEnrich />
-      <AdvancedEnv />
+      <Summary />
+      <Sampling />
+      <SpanFilter />
+      <ErrorEnrich />
+      <Env />
     </section>
   )
 }

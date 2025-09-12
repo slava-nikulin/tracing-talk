@@ -1,6 +1,6 @@
 import { onCleanup, onMount } from 'solid-js'
 import SlideFrame from '../components/SlideFrame'
-import './tracing-arch.css'
+import './arch.css'
 
 export default function TracingArch() {
   let root!: HTMLDivElement
@@ -25,8 +25,8 @@ export default function TracingArch() {
         .forEach((el) => el.classList.remove('active'))
     }
 
-    const collectorVisible = () =>
-      !!root.querySelector('.collector-fragment.fragment.visible')
+    // const collectorVisible = () =>
+    // !!root.querySelector('.collector-fragment.fragment.visible')
 
     ;(async () => {
       while (!stop) {
@@ -63,13 +63,13 @@ export default function TracingArch() {
         add($('.svc--c .dot.c2'), 'active')
         add($('.svc--c .label.c2'), 'active')
 
-        if (collectorVisible()) {
-          await sleep(T_SERVICE_GAP)
-          add($('.svc--collector'), 'active')
-          add($('.collector-dot'), 'active')
-        }
+        // if (collectorVisible()) {
+        await sleep(T_SERVICE_GAP)
+        add($('.svc--collector'), 'active')
+        add($('.collector-dot'), 'active')
+        // }
 
-        await sleep(T_AFTER)
+        await sleep(T_AFTER * 2)
       }
     })()
 
@@ -80,7 +80,7 @@ export default function TracingArch() {
 
   return (
     <SlideFrame
-      title="Что такое Distributed Tracing"
+      title="Как работает distributed tracing"
       gradient="linear-gradient(160deg,#050507 0%,#101020 35%,#152030 65%,#050507 100%)"
       notes={
         <>
@@ -247,7 +247,7 @@ export default function TracingArch() {
           {/* ===== ФРАГМЕНТ 2: COLLECTOR сверху справа от Service C ===== */}
 
           <g
-            class="svc svc--collector collector-fragment fragment"
+            class="svc svc--collector collector-fragment"
             transform="translate(828,5)"
           >
             <rect

@@ -68,11 +68,11 @@ export default function Tools() {
           </h3>
           <ul class="list-disc marker:text-indigo-400 pl-5 space-y-2 text-lg text-left">
             <li>
-              <span class="font-semibold">Jaeger UI</span>
-            </li>
-            <li>
               <span class="font-semibold">Grafana Tempo</span> +{' '}
               <span class="font-semibold">Grafana UI</span>
+            </li>
+            <li>
+              <span class="font-semibold">Jaeger UI</span>
             </li>
           </ul>
         </div>

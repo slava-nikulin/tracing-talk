@@ -1,10 +1,19 @@
-import SlideFrame from '../components/SlideFrame'
-export default function Integration101() {
+import Summary from './integration/Summary'
+import Init from './integration/Init'
+import Span from './integration/Span'
+import KafkaProducer from './integration/KafkaProducer'
+import KafkaConsumer from './integration/KafkaConsumer'
+import Redis from './integration/Redis'
+
+export default function Advanced() {
   return (
-    <SlideFrame
-      title="Практика внедрения"
-      gradient="linear-gradient(160deg,#050507 0%,#101020 35%,#152030 65%,#050507 100%)"
-      notes={<></>}
-    ></SlideFrame>
+    <section>
+      <Summary />
+      <Init />
+      <Span />
+      <KafkaProducer />
+      <KafkaConsumer />
+      <Redis />
+    </section>
   )
 }

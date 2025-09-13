@@ -4,7 +4,7 @@ import './usecases.css'
 export default function UseCases() {
   return (
     <SlideFrame
-      title="Зачем бизнесу и инженерам нужен tracing"
+      title="Ценность трейсинга"
       gradient="linear-gradient(160deg,#050507 0%,#101020 35%,#152030 65%,#050507 100%)"
       notes={
         <>
@@ -17,7 +17,7 @@ export default function UseCases() {
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid md:grid-cols-2 gap-8">
           <ol class="list-disc marker:text-fuchsia-500 list-outside pl-6 text-left text-xl space-y-5 text-amber-50">
-            <li>Поиск bottlenecks</li>
+            <li>Быстрый поиск bottlenecks и ошибок</li>
             <li>
               Снижение MTTR(
               <span class="italic text-amber-100">Mean Time to Repair</span>) и
@@ -25,13 +25,6 @@ export default function UseCases() {
               <span class="italic text-amber-100">Root Cause Analysis</span>)
             </li>
             <li>Прозрачность распределённых вызовов и границ сервисов</li>
-            <li>
-              Контроль SLO(
-              <span class="italic text-amber-100">
-                Service Level Objectives
-              </span>
-              ) и регрессий по latency
-            </li>
           </ol>
           <svg
             viewBox="0 0 560 260"

@@ -4,8 +4,8 @@ import Error from './examples/Error'
 export default function Examples() {
   return (
     <section>
-      <Bottleneck />
       <Error />
+      <Bottleneck />
     </section>
   )
 }

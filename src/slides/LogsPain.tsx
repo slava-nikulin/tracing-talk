@@ -3,7 +3,7 @@ import SlideFrame from '../components/SlideFrame'
 export default function LogsPain() {
   return (
     <SlideFrame
-      title="Без трейсинга"
+      title="Проблема: нет трейсинга"
       notes={
         <>
           Покажи аудитории, что при инциденте мы видим тысячи строк. Логи

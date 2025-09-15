@@ -1,6 +1,7 @@
 // slide file
 import RectMagnifier from '../../components/RectMagnifier'
 import SlideFrame from '../../components/SlideFrame'
+import traceErr from '../../assets/img/trace-error.png'
 
 export default function ExamplesError() {
   let targetRef!: HTMLDivElement
@@ -13,7 +14,7 @@ export default function ExamplesError() {
       <div ref={targetRef!} class="relative">
         <figure class="w-full my-0 mx-0">
           <img
-            src="/img/trace-error.png"
+            src={traceErr}
             alt="Трейс с ошибкой"
             class="w-full max-w-[1100px] mx-auto rounded-lg border border-zinc-600/60 shadow-lg object-contain"
             loading="lazy"

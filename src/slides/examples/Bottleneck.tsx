@@ -1,5 +1,6 @@
 import RectMagnifier from '../../components/RectMagnifier'
 import SlideFrame from '../../components/SlideFrame'
+import traceBottleneck from '../../assets/img/trace-bottleneck.png'
 
 export default function Bottleneck() {
   let targetRef!: HTMLDivElement
@@ -17,7 +18,7 @@ export default function Bottleneck() {
       <div ref={targetRef!} class="relative">
         <figure class="w-full my-0 mx-0">
           <img
-            src="/img/trace-bottleneck.png"
+            src={traceBottleneck}
             alt="Трейс с bottleneck"
             class="w-full max-w-[1100px] mx-auto rounded-lg border border-zinc-600/60 shadow-lg object-contain"
             loading="lazy"

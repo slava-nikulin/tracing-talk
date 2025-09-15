@@ -1,11 +1,11 @@
-export default function Intro() {
-  const bg = '/video/intro.mp4'
+import intro from '../assets/video/intro.mp4'
 
+export default function Intro() {
   return (
     <section
       // data-transition="slide"
       // data-background-transition="fade"
-      data-background-video={bg}
+      data-background-video={intro}
       data-background-video-loop
       data-background-video-muted
       data-background-size="cover"

@@ -12,14 +12,30 @@ export default function AdvancedErrorEnrich() {
         <code data-trim data-line-numbers="" class="language-yml">
           {`# collector config
 processors:
-  filter:
-    error_mode: ignore
-    traces:
-      span:
-        - attributes["db.statement"] == "cluster slots"
-        - name == "redis.dial"
-        - name == "db.Connect"
-        - name == "db.Ping"
+  tailsampling:
+    decision_wait: 5s
+    num_traces: 50000
+    policies:
+      # 1. Ошибки
+      - name: errors
+        type: status_code
+        status_code:
+          status_codes: [ERROR]
+
+      # 2. Медленные запросы
+      - name: slow_requests
+        type: latency
+        latency:
+          threshold_ms: 500
+
+      # 3. Исключить "ping" и "healthcheck"
+      - name: drop_ping
+        type: span
+        span:
+          name:
+            match_type: regexp
+            value: ".*(ping|healthcheck).*"
+          invert_match: true
         `}
         </code>
       </pre>

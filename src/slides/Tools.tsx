@@ -14,7 +14,7 @@ export default function Tools() {
         </>
       }
     >
-      <div class="grid gap-8 md:gap-10 md:grid-cols-2 text-neutral-100 my-5 px-5">
+      <div class="grid gap-8 md:gap-10 md:grid-cols-2 text-neutral-100 my-0 px-5">
         {/* A. SDK */}
         <div>
           <h3 class="uppercase tracking-wider text-sm text-sky-200 mb-2 text-left mx-5">

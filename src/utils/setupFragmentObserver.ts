@@ -4,16 +4,16 @@ export function setupFragmentObserver(
 ) {
   const run = () => apply(section)
 
-  // первичная синхронизация
+  let prev = section.getAttribute('data-fragment')
   run()
 
-  const mo = new MutationObserver(muts => {
-    const touched = muts.some(
-      m => m.type === 'attributes' && m.attributeName === 'data-fragment'
-    )
-    if (!touched) return
+  const mo = new MutationObserver(() => {
+    const curr = section.getAttribute('data-fragment')
+    if (curr === prev) return
+    prev = curr
     run()
   })
+
   mo.observe(section, { attributes: true, attributeFilter: ['data-fragment'] })
   return () => mo.disconnect()
 }

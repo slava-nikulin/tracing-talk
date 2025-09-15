@@ -1,6 +1,6 @@
 import { onCleanup, onMount } from 'solid-js'
 import SlideFrame from '../components/SlideFrame'
-import './arch.css'
+import './css/arch.css'
 
 export default function TracingArch() {
   let root!: HTMLDivElement

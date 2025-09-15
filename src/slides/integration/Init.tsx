@@ -1,12 +1,12 @@
 import SlideFrame from '../../components/SlideFrame'
-import { applyByCurrentFragment } from '../../utils/applyByCurrentFragment'
+import { fixCodeSplit } from '../../utils/fixCodeSplit'
 import { setupFragmentObserver } from '../../utils/setupFragmentObserver'
 
 export default function IntegrationInit() {
   return (
     <SlideFrame
       onSectionReady={(section) => {
-        return setupFragmentObserver(section, applyByCurrentFragment)
+        return setupFragmentObserver(section, fixCodeSplit)
       }}
       title="Init: TracerProvider + Propagators"
       notes={

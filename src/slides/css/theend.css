@@ -1,0 +1,27 @@
+.qa .backgrounds .slide-background.present {
+  background: linear-gradient(160deg, #050507 0%, #101020 35%, #152030 65%, #050507 100%);
+  background-size: 260% 260%;
+  animation: qa-wave 32s ease-in-out infinite;
+}
+
+@keyframes qa-wave {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  25% {
+    background-position: 100% 20%;
+  }
+
+  50% {
+    background-position: 80% 100%;
+  }
+
+  75% {
+    background-position: 20% 80%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}

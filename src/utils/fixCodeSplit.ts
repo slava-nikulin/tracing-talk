@@ -1,4 +1,5 @@
-export function applyByCurrentFragment(section: HTMLElement) {
+// fixes visual bug when code splitting used in data-line-numbers
+export function fixCodeSplit(section: HTMLElement) {
   const codes = Array.from(section.querySelectorAll('code')) as HTMLElement[]
   if (!codes.length) return
 

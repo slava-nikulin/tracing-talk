@@ -1,4 +1,4 @@
-import './observability.css'
+import './css/observability.css'
 import SlideFrame from '../components/SlideFrame'
 
 export default function Observability() {

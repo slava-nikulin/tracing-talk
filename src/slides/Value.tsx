@@ -1,5 +1,5 @@
 import SlideFrame from '../components/SlideFrame'
-import './usecases.css'
+import './css/value.css'
 
 export default function UseCases() {
   return (
@@ -14,7 +14,7 @@ export default function UseCases() {
         </>
       }
     >
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-0">
         <div class="grid md:grid-cols-2 gap-8">
           <ol class="list-disc marker:text-fuchsia-500 list-outside pl-6 text-left text-xl space-y-5 text-amber-50">
             <li>Быстрый поиск bottlenecks и ошибок</li>

@@ -1,15 +1,24 @@
 import SlideFrame from '../../components/SlideFrame'
+import { fixCodeSplit } from '../../utils/fixCodeSplit'
+import { setupFragmentObserver } from '../../utils/setupFragmentObserver'
 
 export default function AdvancedErrorEnrich() {
   return (
     <SlideFrame
       title="Обогащение span"
+      onSectionReady={(section) => {
+        return setupFragmentObserver(section, fixCodeSplit)
+      }}
       notes={
         <>RecordError + SetStatus + AddEvent; в логи — trace_id/span_id.</>
       }
     >
       <pre class="rounded-lg border border-zinc-600/60 bg-zinc-900/70 p-4 overflow-x-auto text-sky-100 text-sm text-left my-0">
-        <code data-trim data-line-numbers="1-25" class="language-go">
+        <code
+          data-trim
+          data-line-numbers="5-8|10|13-14|18-21"
+          class="language-go"
+        >
           {`
 func ProcessPayment(ctx context.Context, userID string, amount int) error {
     ctx, span := tracer.Start(ctx, "process.payment")

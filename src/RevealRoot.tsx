@@ -47,7 +47,7 @@ export default function RevealRoot(props: Props) {
         RevealHighlight,
       ],
       width: 1024,
-      navigationMode: 'default',
+      navigationMode: 'linear',
     })
 
     // Attach listeners before initialize so we catch the initial ready event

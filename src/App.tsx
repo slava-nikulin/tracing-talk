@@ -8,6 +8,7 @@ import Tools from './slides/Tools'
 import Advanced from './slides/Advanced'
 import LogsPain from './slides/LogsPain'
 import Examples from './slides/Examples'
+import TheEnd from './slides/TheEnd'
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
       <Tools />
       <Integration101 />
       <Advanced />
+      <TheEnd />
     </RevealRoot>
   )
 }

@@ -7,7 +7,8 @@ export default function IntegrationKafka() {
       notes={
         <>
           <p>
-            А в <i>consumer</i> выполняется обратная операция.
+            В <i>consumer</i> нужно выполнить обратную операцию. <i>Trace</i>{' '}
+            достается из сообщения и кладется в контекст
           </p>
         </>
       }

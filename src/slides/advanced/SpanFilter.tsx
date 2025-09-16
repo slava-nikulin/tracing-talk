@@ -5,7 +5,17 @@ export default function AdvancedErrorEnrich() {
     <SlideFrame
       title="Sampling: tail-based"
       notes={
-        <>RecordError + SetStatus + AddEvent; в логи — trace_id/span_id.</>
+        <>
+          <p>
+            Также есть возможность фильтровать трейсы на стороне{' '}
+            <i>коллектора</i> перед сохранением. Это называется{' '}
+            <i>tail-based sampling</i>.
+          </p>
+          <p>
+            Он позволяет сохранять, например, только ошибки или медленные
+            запросы.{' '}
+          </p>
+        </>
       }
     >
       <pre class="rounded-lg border border-zinc-600/60 bg-zinc-900/70 p-4 overflow-x-auto text-sky-100 text-sm text-left my-0">

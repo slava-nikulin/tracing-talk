@@ -10,7 +10,26 @@ export default function AdvancedErrorEnrich() {
         return setupFragmentObserver(section, fixCodeSplit)
       }}
       notes={
-        <>RecordError + SetStatus + AddEvent; в логи — trace_id/span_id.</>
+        <>
+          <p>И в-третьих, очень полезно обогащать спаны метаинформацией:</p>
+          <p>
+            Например, если добавить <b>в атрибуты</b> спана параметры метода,
+            это значительно облегчит поиск трейса в ui
+          </p>
+          <p>
+            Также в спан можно добавлять <i>события</i>. Основная польза от
+            событий - это фиксация ключевых шагов внутри операции. Это облегчает
+            troubleshooting - легко понять, на каком этапе произошла проблема
+          </p>
+          <p>
+            <b>Ошибки</b> стоит фиксировать через <i>RecordError</i> и{' '}
+            <i>SetStatus</i>. С ними спан подсветится красным. Без них - нет.
+          </p>
+          <p>
+            Наконец, рекомендую добавлять корреляцию с логами: <b>trace_id</b> в
+            логах позволит быстро переходить от лог-записи к трейсу
+          </p>
+        </>
       }
     >
       <pre class="rounded-lg border border-zinc-600/60 bg-zinc-900/70 p-4 overflow-x-auto text-sky-100 text-sm text-left my-0">

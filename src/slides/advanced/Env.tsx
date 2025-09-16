@@ -5,7 +5,18 @@ export default function AdvancedEnv() {
     <SlideFrame
       title="ENV вместо кода"
       notes={
-        <>Нормализуй service.name, endpoint, propagators, resource attrs.</>
+        <>
+          <p>
+            В дополнение к этому есть также несколько приёмов, которые сделают
+            работу с трейсингом эффективнее.
+          </p>
+          <p>
+            <b>Во-первых</b>, большинство настроек можно вынести в переменные
+            окружения. В коде создается только TracerProvider, а все остальное
+            управляются через переменные. Это удобно потому как конфигурация
+            меняется без перекомпиляции.
+          </p>
+        </>
       }
     >
       <pre class="rounded-lg border border-zinc-600/60 bg-zinc-900/70 p-4 overflow-x-auto text-sky-100 text-sm text-left my-0">

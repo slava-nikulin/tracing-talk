@@ -6,8 +6,13 @@ export default function AdvancedSampling() {
       title="Sampling: head-based"
       notes={
         <>
-          Prod: parentbased_traceidratio + tail sampling в Collector. Dev:
-          always_on.
+          <b>Во-вторых</b>, стоит настроить <i>сэмплирование</i>. Это механизм,
+          который <b>контролирует объём трейсов</b>. Делается это чтобы не
+          загружать излишне сеть и хранилище. На highload сервисах собирать
+          каждый трейс будет слишком дорого.
+          <p>Настроить сэмплирование можно в SDK</p> - это называется{' '}
+          <i>Head-based sampling</i>. Здесь решение о том «сохранять трейс или
+          нет» принимается перед его созданием.
         </>
       }
     >

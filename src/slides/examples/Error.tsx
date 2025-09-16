@@ -51,7 +51,7 @@ export default function ExamplesError() {
 
         <RectMagnifier
           targetRef={() => targetRef}
-          startDelayMs={10000}
+          startDelayMs={1000}
           imgSelector="img"
           blurOutside
           blurPx={2}
@@ -84,9 +84,9 @@ export default function ExamplesError() {
               holdMs: 4000,
             },
             {
-              x: -0.12,
+              x: -0.127,
               y: 0.22,
-              w: 1.1,
+              w: 1.27,
               h: 0.85,
               scale: 1.3,
               transitionMs: 800,

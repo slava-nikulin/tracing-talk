@@ -9,7 +9,32 @@ export default function ExamplesError() {
   return (
     <SlideFrame
       title="Пример: трейс с ошибкой"
-      notes={<>Вставь прод-скрин...</>}
+      notes={
+        <>
+          <p>
+            На скриншоте показана лишь часть трейса — обычно они длиннее. Здесь
+            в запросе произошла ошибка, и она сразу подсвечена. Видно:
+          </p>
+          <ul>
+            <li>
+              название сервиса - <i>payment-gateway</i>
+            </li>
+            <li>
+              название функции - <i>SetCardAmount</i>
+            </li>
+            <li>
+              данные ошибки в атрибутах <i>span</i>.
+            </li>
+          </ul>
+          <p>Также я подсветил сам спан - так он выглядит в Grafana</p>
+          <p>
+            <b>
+              <i>Переход:</i>
+            </b>{' '}
+            Ещё пример.
+          </p>
+        </>
+      }
     >
       <div ref={targetRef!} class="relative">
         <figure class="w-full my-0 mx-0">
@@ -57,6 +82,15 @@ export default function ExamplesError() {
               scale: 5,
               transitionMs: 800,
               holdMs: 4000,
+            },
+            {
+              x: -0.12,
+              y: 0.22,
+              w: 1.1,
+              h: 0.85,
+              scale: 1.3,
+              transitionMs: 800,
+              holdMs: 5000,
             },
             { hide: true, holdMs: 3000 },
           ]}

@@ -8,9 +8,28 @@ export default function UseCases() {
       gradient="linear-gradient(160deg,#050507 0%,#101020 35%,#152030 65%,#050507 100%)"
       notes={
         <>
-          Коротко: bottlenecks → куда оптимизировать; MTTR↓ → быстрее
-          восстановление; прозрачность цепочек → меньше «чёрных ящиков».
-          Пульсация у горлышка как метафора перегруза.
+          <p>
+            Итак, трейсинг показывает, где именно узкое место или ошибка. Это
+            полезно разработчикам, но также даёт два ключевых бизнес-эффекта.
+          </p>
+          <ul>
+            <li>
+              <b>Во-первых,</b> это cнижение{' '}
+              <i>среднего времени на устранение инцидента — MTTR</i> и
+              увеличение скорости <i>анализа первопричины — RCA</i>.
+            </li>
+            <li>
+              <b>Во-вторых,</b> трейсинг даёт прозрачность распределённых
+              вызовов и границ сервисов, что упрощает коммуникацию команд.
+            </li>
+          </ul>
+          <p>
+            <b>
+              <i>Переход:</i>
+            </b>{' '}
+            Окей, теперь посмотрим, из чего складывается типичный инструментарий
+            трейсинга.
+          </p>
         </>
       }
     >
@@ -26,58 +45,82 @@ export default function UseCases() {
             </li>
             <li>Прозрачность распределённых вызовов и границ сервисов</li>
           </ol>
+
           <svg
             viewBox="0 0 560 260"
             class="bnk-svg"
             role="img"
             aria-label="Bottleneck"
           >
-            {/* бутылка: две кривые, сужение у шейки */}
-            <path
-              class="bnk-bottle"
-              d="M40,80 H240 C300,80 320,110 360,130 C400,150 420,150 520,150"
+            <defs>
+              {/* <!-- мягкое свечение для точек --> */}
+              <filter
+                id="dotGlow"
+                x="-80%"
+                y="-80%"
+                width="260%"
+                height="260%"
+                color-interpolation-filters="sRGB"
+              >
+                <feGaussianBlur stdDeviation="6" result="b" />
+                <feMerge>
+                  <feMergeNode in="b" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+
+              <path
+                id="tube"
+                d="M40,80 H240 C300,80 320,110 360,130 C400,150 420,150 520,150
+         M40,180 H240 C300,180 320,150 360,130 C400,110 420,110 520,110"
+              />
+            </defs>
+
+            <use
+              href="#tube"
+              fill="none"
+              stroke="hsl(195 100% 72% / .28)"
+              stroke-width="22"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              vector-effect="non-scaling-stroke"
             />
-            <path
-              class="bnk-bottle"
-              d="M40,180 H240 C300,180 320,150 360,130 C400,110 420,110 520,110"
+            <use
+              href="#tube"
+              fill="none"
+              stroke="hsl(195 100% 72%)"
+              stroke-width="7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              vector-effect="non-scaling-stroke"
             />
 
-            {/* точки: зелёные -> жёлтые -> оранжевые -> красные */}
-            {/* зелёные */}
-            <g>
+            <g filter="url(#dotGlow)">
+              {/* <!-- green --> */}
               <circle class="bnk-dot g" cx="90" cy="120" r="10" />
               <circle class="bnk-dot g" cx="120" cy="100" r="10" />
               <circle class="bnk-dot g" cx="120" cy="140" r="10" />
               <circle class="bnk-dot g" cx="150" cy="120" r="10" />
               <circle class="bnk-dot g" cx="90" cy="160" r="10" />
               <circle class="bnk-dot g" cx="150" cy="160" r="10" />
-            </g>
-
-            {/* жёлтые */}
-            <g>
+              {/* <!-- yellow --> */}
               <circle class="bnk-dot y" cx="180" cy="100" r="10" />
               <circle class="bnk-dot y" cx="210" cy="120" r="10" />
               <circle class="bnk-dot y" cx="180" cy="140" r="10" />
               <circle class="bnk-dot y" cx="210" cy="160" r="10" />
-              <circle class="bnk-dot y" cx="240" cy="140" r="10" />
-            </g>
-
-            {/* оранжевые */}
-            <g>
-              <circle class="bnk-dot o" cx="260" cy="120" r="10" />
-              <circle class="bnk-dot o" cx="290" cy="130" r="10" />
-              <circle class="bnk-dot o" cx="260" cy="150" r="10" />
+              <circle class="bnk-dot y" cx="230" cy="100" r="10" />
+              <circle class="bnk-dot y" cx="240" cy="135" r="10" />
+              {/* <!-- orange --> */}
+              <circle class="bnk-dot o" cx="260" cy="110" r="10" />
+              <circle class="bnk-dot o" cx="290" cy="120" r="10" />
+              <circle class="bnk-dot o" cx="270" cy="150" r="10" />
               <circle class="bnk-dot o" cx="300" cy="150" r="10" />
-            </g>
-
-            {/* красные у шейки и после неё */}
-            <g>
+              {/* <!-- red --> */}
               <circle class="bnk-dot r" cx="330" cy="130" r="10" />
-              {/* <circle class="bnk-dot r" cx="350" cy="132" r="10" /> */}
-              <circle class="bnk-dot r" cx="370" cy="130" r="10" />
-              <circle class="bnk-dot r" cx="540" cy="130" r="10" />
-              <circle class="bnk-dot r" cx="490" cy="130" r="10" />
+              <circle class="bnk-dot r" cx="365" cy="130" r="10" />
               <circle class="bnk-dot r" cx="430" cy="130" r="10" />
+              <circle class="bnk-dot r" cx="490" cy="130" r="10" />
+              <circle class="bnk-dot r" cx="540" cy="130" r="10" />
             </g>
           </svg>
         </div>

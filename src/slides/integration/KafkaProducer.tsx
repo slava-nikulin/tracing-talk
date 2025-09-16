@@ -6,8 +6,17 @@ export default function IntegrationKafka() {
       title="Kafka: пропагация контекста (Producer)"
       notes={
         <>
-          Inject в producer headers, Extract на consumer. Дальше стартуй
-          consumer-span с полученным контекстом.
+          <p>
+            В случае, если сервисы общаются по HTTP, всё работает «из коробки» —{' '}
+            <i>traceID</i> прокидывается автоматически в заголовках. Для
+            остальных случаев нужно <b>вручную</b> осуществлять пропагацию{' '}
+            <i>trace context</i>.
+          </p>
+          <p>
+            Например, для <b>Kafka</b> в <i>producer</i>, с помощью пакета{' '}
+            <i>propagation</i>, <i>trace</i> достаётся из переменной контекста
+            записывается в заголовки передаваемого сообщения
+          </p>
         </>
       }
     >

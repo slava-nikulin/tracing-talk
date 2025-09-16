@@ -10,8 +10,19 @@ export default function Bottleneck() {
       title="Пример: трейс с bottleneck"
       notes={
         <>
-          Вставь прод-скрин. Видно «горячий» span по времени. Обсуди, где
-          оптимизировать.
+          <p>
+            Здесь также видна цепочка вызовов. Ошибки нет, но заметна задержка.
+            Найти проблемное место просто:
+          </p>
+          <ul>
+            <li>
+              название сервиса - <i>payment-gateway</i>
+            </li>
+            <li>
+              конкретная функция - <i>SetCardAmount</i>
+            </li>
+            <li>и время выполнения.</li>
+          </ul>
         </>
       }
     >
@@ -30,7 +41,7 @@ export default function Bottleneck() {
 
         <RectMagnifier
           targetRef={() => targetRef}
-          startDelayMs={5000}
+          startDelayMs={10000}
           imgSelector="img"
           blurOutside
           blurPx={2}

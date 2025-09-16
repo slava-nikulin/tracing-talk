@@ -175,8 +175,12 @@ export default function RectMagnifier(props: Props): JSX.Element {
       y = yR * a.contentH
     const w = wR * a.contentW,
       h = hR * a.contentH
-    const fx = a.contentLeft + x,
+    let fx = a.contentLeft + x,
       fy = a.contentTop + y
+
+    if (fx < 0) {
+      fx = 3
+    }
 
     frameEl.style.transition = 'none'
     frameEl.style.left = `${fx}px`

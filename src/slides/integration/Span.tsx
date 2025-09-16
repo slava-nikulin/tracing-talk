@@ -7,8 +7,11 @@ export default function IntegrationSpans() {
       title="Спаны"
       notes={
         <>
-          Всегда завершай спан. Ошибки: RecordError + SetStatus. Добавляй
-          атрибуты и события. Логи связывай trace_id/span_id.
+          <p>
+            <i>span</i> создается через <i>tracer provider</i> в начале функции
+            и закрыватся в конце. При необходимости добавляем атрибуты, чтобы
+            они появились в ui, например <code>user.id</code>.
+          </p>
         </>
       }
     >

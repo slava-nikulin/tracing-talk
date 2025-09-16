@@ -6,15 +6,50 @@ export default function TracingArch() {
   let root!: HTMLDivElement
 
   onMount(() => {
-    let stop = false
+    const t = root
+    if (!t) return
+    const section = t.closest('section') as HTMLElement | null
+    if (!section) return
+
+    let disposed = false
+    let running = false
+
+    const start = () => {
+      if (running || disposed) return
+      running = true
+      run()
+    }
+    const stopAll = () => {
+      if (!running) return
+      running = false
+      resetAll()
+    }
+
+    const check = (): boolean => {
+      const visible =
+        section.classList.contains('present') &&
+        !section.hasAttribute('hidden') &&
+        section.getAttribute('aria-hidden') !== 'true'
+      if (visible) start()
+      else stopAll()
+      return visible
+    }
+
+    const mo = new MutationObserver(() => check())
+    mo.observe(section, {
+      attributes: true,
+      attributeFilter: ['hidden', 'aria-hidden', 'class'],
+    })
+    check()
+
     const $ = (s: string) => root.querySelector<HTMLElement>(s)!
     const add = (e: Element | null, c: string) => e && e.classList.add(c)
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
-    // наглядный, медленный ритм
-    const T_SPAN = 500 // между span'ами
-    const T_SERVICE_GAP = 800 // переход к следующему сервису
-    const T_AFTER = 1000 // пауза перед сбросом
+    // ваши константы
+    const T_SPAN = 500
+    const T_SERVICE_GAP = 1400
+    const T_AFTER = 1000
 
     function resetAll() {
       root
@@ -25,56 +60,64 @@ export default function TracingArch() {
         .forEach((el) => el.classList.remove('active'))
     }
 
-    // const collectorVisible = () =>
-    // !!root.querySelector('.collector-fragment.fragment.visible')
-
-    ;(async () => {
-      while (!stop) {
+    async function run() {
+      while (running && !disposed) {
         resetAll()
+
+        await sleep(T_SPAN * 3)
 
         // A
         add($('.svc--a'), 'active')
         await sleep(T_SPAN * 2)
+        if (!running || disposed) break
         add($('.svc--a .dot.a1'), 'active')
         add($('.svc--a .label.a1'), 'active')
         await sleep(T_SPAN)
+        if (!running || disposed) break
         add($('.svc--a .dot.a2'), 'active')
         add($('.svc--a .label.a2'), 'active')
 
         await sleep(T_SERVICE_GAP)
+        if (!running || disposed) break
 
         // B
         add($('.svc--b'), 'active')
         await sleep(T_SPAN * 2)
+        if (!running || disposed) break
         add($('.svc--b .dot.b1'), 'active')
         add($('.svc--b .label.b1'), 'active')
         await sleep(T_SPAN)
+        if (!running || disposed) break
         add($('.svc--b .dot.b2'), 'active')
         add($('.svc--b .label.b2'), 'active')
 
         await sleep(T_SERVICE_GAP)
+        if (!running || disposed) break
 
         // C
         add($('.svc--c'), 'active')
         await sleep(T_SPAN * 2)
+        if (!running || disposed) break
         add($('.svc--c .dot.c1'), 'active')
         add($('.svc--c .label.c1'), 'active')
         await sleep(T_SPAN)
+        if (!running || disposed) break
         add($('.svc--c .dot.c2'), 'active')
         add($('.svc--c .label.c2'), 'active')
 
-        // if (collectorVisible()) {
         await sleep(T_SERVICE_GAP)
+        if (!running || disposed) break
         add($('.svc--collector'), 'active')
         add($('.collector-dot'), 'active')
-        // }
 
-        await sleep(T_AFTER * 2)
+        await sleep(T_AFTER * 1.5)
       }
-    })()
+    }
 
     onCleanup(() => {
-      stop = true
+      disposed = true
+      stopAll()
+      mo.disconnect()
     })
   })
 
@@ -84,10 +127,31 @@ export default function TracingArch() {
       gradient="linear-gradient(160deg,#050507 0%,#101020 35%,#152030 65%,#050507 100%)"
       notes={
         <>
-          Trace — единый идентификатор всей цепочки. Span — отдельная операция с
-          собственным spanID. <br />
-          Context propagation — перенос контекста между сервисами. Во 2-м
-          фрагменте показываем отправку спанов в Collector (OTel).
+          <ul>
+            <li>
+              В основе трейсинга лежит <i>traceID</i> — идентификатор запроса,
+              который передаётся через все сервисы.
+            </li>
+            <li>
+              Каждый сервис создаёт <i>span</i> — отрезок операции внутри{' '}
+              <i>trace</i> — и добавляет его в <b>контекст запроса</b>.
+            </li>
+            <li>
+              Далее <b>контекст запроса</b> вместе с <i>traceID</i> передаётся в
+              следующий сервис. Этот процесс называется <i>пропагация</i>.
+            </li>
+            <li>
+              В результате <i>span-ы</i> со всех сервисов формируют цепочку
+              запроса. Эта цепочка с общим <i>traceID</i> отправляется в
+              коллектор, который агрегирует и сохраняет её как единый трейс.
+            </li>
+          </ul>
+          <p>
+            <b>
+              <i>Переход:</i>
+            </b>{' '}
+            Посмотрим, какие задачи решает трейсинг.
+          </p>
         </>
       }
     >

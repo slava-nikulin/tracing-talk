@@ -11,8 +11,22 @@ export default function IntegrationInit() {
       title="Init: TracerProvider + Propagators"
       notes={
         <>
-          Ресурсные атрибуты, OTLP gRPC, батчер, сэмплер, propagators
-          tracecontext+baggage, корректный Shutdown.
+          <ul>
+            <li>
+              Чтобы трейсинг заработал, нужно задать <i>ресурс</i> — это
+              метаданные, которые идентифицируют сервис внутри общего трейса.
+              Без этого мы не сможем различить, в каком именно сервисе был
+              создан спан.
+            </li>
+            <li>Задаём адрес коллектора.</li>
+            <li>
+              Создаём <i>TracerProvider</i> — он отвечает за создание спанов.
+            </li>
+            <li>
+              И <i>Propagator</i> — он реализует формат передачи{' '}
+              <i>trace context</i> между сервисами.
+            </li>
+          </ul>
         </>
       }
     >

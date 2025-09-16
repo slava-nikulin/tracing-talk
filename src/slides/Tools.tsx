@@ -8,9 +8,31 @@ export default function Tools() {
       gradient="linear-gradient(160deg,#050507 0%,#101020 35%,#152030 65%,#050507 100%)"
       notes={
         <>
-          Фокус на практическом стеке: OTel SDK → OTel Collector → Tempo/Jaeger
-          → Grafana/Jaeger UI. Без деталей про семплинг и экспортёры — это в
-          других слайдах.
+          <p>Сегодня стандартом де-факто является стек OpenTelemetry.</p>
+          <p>
+            <b>Что нужно для работы:</b>
+          </p>
+          <ul>
+            <li>
+              На стороне кода используем <b>OpenTelemetry SDK</b>.
+            </li>
+            <li>
+              Далее поднимаем <b>OpenTelemetry Collector</b>.
+            </li>
+            <li>
+              <b>Хранилище</b> для трейсов — либо <i>Grafana Tempo</i>, либо{' '}
+              <i>Jaeger</i>.
+            </li>
+            <li>
+              Для визуализации — либо <i>Grafana UI</i>, либо <i>Jaeger UI</i>.
+            </li>
+          </ul>
+          <p>
+            <b>
+              <i>Переход:</i>
+            </b>{' '}
+            Окей, инструменты выбрали. Давайте посмотрим на примеры кода.
+          </p>
         </>
       }
     >

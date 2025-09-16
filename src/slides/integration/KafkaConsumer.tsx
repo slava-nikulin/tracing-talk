@@ -6,8 +6,9 @@ export default function IntegrationKafka() {
       title="Kafka: пропагация контекста (Consumer)"
       notes={
         <>
-          Inject в producer headers, Extract на consumer. Дальше стартуй
-          consumer-span с полученным контекстом.
+          <p>
+            А в <i>consumer</i> выполняется обратная операция.
+          </p>
         </>
       }
     >

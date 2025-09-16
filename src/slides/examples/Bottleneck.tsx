@@ -30,7 +30,7 @@ export default function Bottleneck() {
 
         <RectMagnifier
           targetRef={() => targetRef}
-          startDelayMs={7000}
+          startDelayMs={5000}
           imgSelector="img"
           blurOutside
           blurPx={2}

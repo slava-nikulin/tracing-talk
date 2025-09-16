@@ -297,24 +297,24 @@ export default function RectMagnifier(props: Props): JSX.Element {
     }
   }
 
-  // Включение/выключение по атрибутам секции (без IntersectionObserver)
   onMount(() => {
     const t = props.targetRef()
     const section = t?.closest('section') as HTMLElement | null
     if (!section) return
 
     const check = () => {
-      const hidden =
-        section.hasAttribute('hidden') ||
-        section.getAttribute('aria-hidden') === 'true'
-      if (hidden) stop()
+      const visible =
+        section.classList.contains('present') &&
+        !section.hasAttribute('hidden') &&
+        !(section.getAttribute('aria-hidden') === 'true')
+      if (!visible) stop()
       else start()
     }
 
     const mo = new MutationObserver(check)
     mo.observe(section, {
       attributes: true,
-      attributeFilter: ['hidden', 'aria-hidden'],
+      attributeFilter: ['hidden', 'aria-hidden', 'class'],
     })
     check()
 

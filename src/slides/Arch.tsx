@@ -44,7 +44,6 @@ export default function TracingArch() {
 
     const $ = (s: string) => root.querySelector<HTMLElement>(s)!
     const add = (e: Element | null, c: string) => e && e.classList.add(c)
-    const rem = (e: Element | null, c: string) => e && e.classList.remove(c)
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
     // ваши константы
@@ -54,22 +53,27 @@ export default function TracingArch() {
     const T_PULSE = 650
 
     // подготовка путей к анимации dashoffset
-    function primePath(path: SVGPathElement) {
-      const L = path.getTotalLength()
-      path.style.setProperty('--len', `${L}`)
-      path.style.setProperty('--off', `${L}`)
-      rem(path, 'send')
-      void path.getBoundingClientRect()
+    async function primeAnimPath(groupId: string, speed = 0.45) {
+      const p = document.querySelector<SVGPathElement>(`#${groupId} .anim`)
+      if (!p) return null
+      const L = p.getTotalLength()
+      p.style.setProperty('--dash', `${L}`)
+      p.style.setProperty('--off', `${L}`)
+      // длительность пропорциональна длине пути
+      const durMs = Math.max(200, Math.round(L / speed))
+      p.style.setProperty('--dur', `${durMs}ms`)
+      // один кадр на фиксацию стартовых значений
+      await new Promise((r) => requestAnimationFrame(r))
+      return p
     }
 
-    async function pulseUplink(id: string) {
-      await sleep(T_SPAN)
-      const path = document.getElementById(id) as SVGPathElement | null
-      if (!path) return
-      primePath(path)
-      add(path, 'send')
-      path.style.transition = `stroke-dashoffset ${T_PULSE}ms linear`
-      path.style.setProperty('--off', '0')
+    async function pulseUplink(id: string, durMs = 3000) {
+      await sleep(T_SPAN) // твоя синхронизация
+      const g = document.getElementById(id)
+      if (!g) return
+      g.style.setProperty('--dur', `${durMs}ms`)
+      // один кадр, чтобы браузер зафиксировал стартовые стили (offset=1)
+      requestAnimationFrame(() => g.classList.add('send'))
     }
 
     function resetAll() {
@@ -82,12 +86,9 @@ export default function TracingArch() {
         )
         .forEach((el) => el.classList.remove('active'))
       ;['uplink-a', 'uplink-b', 'uplink-c'].forEach((id) => {
-        const p = document.getElementById(id) as SVGPathElement | null
-        if (p) {
-          p.style.removeProperty('--len')
-          p.style.removeProperty('--off')
-          p.style.transition = ''
-        }
+        const g = document.getElementById(id)
+        if (g) g.style.removeProperty('--dur')
+        // верхний слой вернётся к stroke-dashoffset:1 по CSS при следующем цикле
       })
     }
 
@@ -111,7 +112,7 @@ export default function TracingArch() {
         add($('.svc--a .label.a2'), 'active')
 
         // экспорт из A → Collector (uplink-a)
-        await pulseUplink('uplink-a')
+        await pulseUplink('uplink-a', 800)
 
         await sleep(T_SERVICE_GAP)
         if (!running || disposed) break
@@ -128,7 +129,7 @@ export default function TracingArch() {
         add($('.svc--b .label.b2'), 'active')
 
         // экспорт из B → Collector (uplink-b)
-        await pulseUplink('uplink-b')
+        await pulseUplink('uplink-b', 400)
 
         await sleep(T_SERVICE_GAP)
         if (!running || disposed) break
@@ -145,7 +146,7 @@ export default function TracingArch() {
         add($('.svc--c .label.c2'), 'active')
 
         // экспорт из C → Collector (uplink-c) и лёгкая подсветка коллектора
-        await pulseUplink('uplink-c')
+        await pulseUplink('uplink-c', 800)
 
         await sleep(T_AFTER * 1.5)
       }
@@ -387,9 +388,40 @@ export default function TracingArch() {
           </g>
 
           {/* <!-- ===== УГЛОВЫЕ UPLINK-СТРЕЛКИ A/B/C → COLLECTOR ===== --> */}
-          <path id="uplink-a" class="uplink" d="M180,198 L180,65 L432,65" />
+          {/* <path id="uplink-a" class="uplink" d="M180,198 L180,65 L432,65" />
           <path id="uplink-b" class="uplink" d="M512,198 L512,108" />
-          <path id="uplink-c" class="uplink" d="M844,198 L844,65 L592,65" />
+          <path id="uplink-c" class="uplink" d="M844,198 L844,65 L592,65" /> */}
+
+          {/* <!-- A → COLLECTOR --> */}
+          <g id="uplink-a" class="uplink" style="color: var(--c-a)">
+            <path class="bg" d="M180,200 L180,65 L432,65" />
+            <path
+              class="anim"
+              d="M180,200 L180,65 L432,65"
+              pathLength="1"
+              marker-end="url(#arrow)"
+            />
+          </g>
+
+          <g id="uplink-b" class="uplink" style="color: var(--c-b)">
+            <path class="bg" d="M512,200 L512,108" />
+            <path
+              class="anim"
+              d="M512,200 L512,108"
+              pathLength="1"
+              marker-end="url(#arrow)"
+            />
+          </g>
+
+          <g id="uplink-c" class="uplink" style="color: var(--c-c)">
+            <path class="bg" d="M844,200 L844,65 L592,65" />
+            <path
+              class="anim"
+              d="M844,200 L844,65 L592,65"
+              pathLength="1"
+              marker-end="url(#arrow)"
+            />
+          </g>
         </svg>
       </div>
     </SlideFrame>

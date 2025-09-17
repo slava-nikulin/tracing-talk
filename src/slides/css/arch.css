@@ -1,23 +1,23 @@
 @property --glow-r1 {
-  syntax: "<length>";
+  syntax: '<length>';
   inherits: false;
   initial-value: 0px;
 }
 
 @property --glow-r2 {
-  syntax: "<length>";
+  syntax: '<length>';
   inherits: false;
   initial-value: 0px;
 }
 
 @property --glow-c1 {
-  syntax: "<color>";
+  syntax: '<color>';
   inherits: false;
   initial-value: transparent;
 }
 
 @property --glow-c2 {
-  syntax: "<color>";
+  syntax: '<color>';
   inherits: false;
   initial-value: transparent;
 }
@@ -74,7 +74,6 @@
   --svc: var(--c-collector);
 }
 
-
 /* заголовки блоков */
 .svc-title {
   font: 700 14px/1 'EuropaNuova', ui-sans-serif, system-ui;
@@ -83,35 +82,31 @@
   fill: var(--dim);
 }
 
-
 /* рамки: базовое и активное состояние (единые для сервисов и коллектора) */
 .svc-frame {
   --glow-r1: 0px;
-    --glow-r2: 0px;
-    --glow-c1: transparent;
-    --glow-c2: transparent;
+  --glow-r2: 0px;
+  --glow-c1: transparent;
+  --glow-c2: transparent;
   fill: rgba(8, 13, 20, 0.52);
   stroke-width: 3;
   stroke: var(--svc);
-  filter: drop-shadow(0 0 var(--glow-r1) var(--glow-c1)) drop-shadow(0 0 var(--glow-r2) var(--glow-c2));
+  filter: drop-shadow(0 0 var(--glow-r1) var(--glow-c1))
+    drop-shadow(0 0 var(--glow-r2) var(--glow-c2));
   transition: filter 0.25s ease, stroke 0.25s ease, opacity 0.25s;
   opacity: 0.25;
-  transition:
-      --glow-r1 250ms ease,
-      --glow-r2 250ms ease,
-      --glow-c1 250ms ease,
-      --glow-c2 250ms ease,
-      opacity 250ms ease;
+  transition: --glow-r1 250ms ease, --glow-r2 250ms ease, --glow-c1 250ms ease,
+    --glow-c2 250ms ease, opacity 250ms ease;
   will-change: filter, opacity;
 }
 
 .svc.active .svc-frame {
   opacity: 1;
   --glow-r1: 8px;
-    --glow-r2: 22px;
-    /* color-mix в Oklab даёт предсказуемую прозрачность/тон */
-    --glow-c1: color-mix(in oklab, var(--svc) 60%, transparent);
-    --glow-c2: color-mix(in oklab, var(--svc) 40%, transparent);
+  --glow-r2: 22px;
+  /* color-mix в Oklab даёт предсказуемую прозрачность/тон */
+  --glow-c1: color-mix(in oklab, var(--svc) 60%, transparent);
+  --glow-c2: color-mix(in oklab, var(--svc) 40%, transparent);
 }
 
 /* точки-спаны */
@@ -159,18 +154,22 @@
   transform: translate(var(--badge-enter-x, 0), var(--badge-enter-y, 0));
   transform-box: fill-box;
   transform-origin: center;
-  transition: opacity .35s ease, transform .35s ease;
+  transition-property: opacity, transform;
+  transition-duration: 350ms, var(--badge-enter-dur, 350ms);
+  transition-timing-function: ease, linear;
 }
 
 .svc--a .trace-badge {
   --badge-enter-x: 0px;
   --badge-enter-y: -16px;
+  --badge-enter-dur: 350ms;
 }
 
 .svc--b .trace-badge,
 .svc--c .trace-badge {
-  --badge-enter-x: -100px;
+  --badge-enter-x: -200px;
   --badge-enter-y: 0px;
+  --badge-enter-dur: 1000ms;
 }
 
 /* «прислали слева» */
@@ -183,7 +182,7 @@
 .badge-text .parent-val {
   fill: color-mix(in oklab, var(--svc-prev) 85%, white 15%);
   font-weight: 900;
-  letter-spacing: .03em;
+  letter-spacing: 0.03em;
 }
 
 /* Необязательно: серый для NULL у корня */
@@ -241,13 +240,41 @@
 
 /* когда у пути проставлен --len, эта анимация сработает плавно */
 .uplink {
-  stroke-dasharray: var(--len, 0);
-  stroke-dashoffset: var(--off, 0);
+  fill: none;
+  stroke: currentColor;
+}
+
+.uplink .bg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  opacity: 0.25;
+}
+
+/* верхний слой: рисуем от начала к концу; скорость = var(--dur) */
+.uplink .anim {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  opacity: 0.25;
+  stroke-dasharray: 1; /* весь путь = 1.0 */
+  stroke-dashoffset: 1; /* скрыт полностью */
+  transition: stroke-dashoffset var(--dur, 250ms) linear, opacity 250ms linear;
+  will-change: stroke-dashoffset, opacity;
+}
+.uplink.send .anim {
+  stroke-dashoffset: 0; /* дорисовать до конца */
+  opacity: 1;
 }
 
 /* небольшая подсветка коллектора при активности */
 .svc--collector.active .svc-frame {
   stroke: var(--c-collector);
   opacity: 1;
-  filter: drop-shadow(0 0 8px color-mix(in oklab, var(--c-collector) 60%, transparent)) drop-shadow(0 0 22px color-mix(in oklab, var(--c-collector) 40%, transparent));
+  filter: drop-shadow(
+      0 0 8px color-mix(in oklab, var(--c-collector) 60%, transparent)
+    )
+    drop-shadow(
+      0 0 22px color-mix(in oklab, var(--c-collector) 40%, transparent)
+    );
 }

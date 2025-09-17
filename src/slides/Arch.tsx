@@ -50,22 +50,6 @@ export default function TracingArch() {
     const T_SPAN = 1300
     const T_SERVICE_GAP = 1400
     const T_AFTER = 1000
-    const T_PULSE = 650
-
-    // подготовка путей к анимации dashoffset
-    async function primeAnimPath(groupId: string, speed = 0.45) {
-      const p = document.querySelector<SVGPathElement>(`#${groupId} .anim`)
-      if (!p) return null
-      const L = p.getTotalLength()
-      p.style.setProperty('--dash', `${L}`)
-      p.style.setProperty('--off', `${L}`)
-      // длительность пропорциональна длине пути
-      const durMs = Math.max(200, Math.round(L / speed))
-      p.style.setProperty('--dur', `${durMs}ms`)
-      // один кадр на фиксацию стартовых значений
-      await new Promise((r) => requestAnimationFrame(r))
-      return p
-    }
 
     async function pulseUplink(id: string, durMs = 3000) {
       await sleep(T_SPAN) // твоя синхронизация

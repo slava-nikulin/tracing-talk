@@ -12,8 +12,9 @@ export default function ExamplesError() {
       notes={
         <>
           <p>
-            На скриншоте показана лишь часть трейса — обычно они длиннее. Здесь
-            в запросе произошла ошибка, и она сразу подсвечена. Видно:
+            Так выглядит трейс в ui. На скриншоте показана лишь его часть —
+            обычно он длиннее. Здесь в запросе произошла ошибка, и она сразу
+            подсвечена. Видно:
           </p>
           <ul>
             <li>
@@ -23,10 +24,10 @@ export default function ExamplesError() {
               название функции - <i>SetCardAmount</i>
             </li>
             <li>
-              данные ошибки в атрибутах <i>span</i>.
+              данные по ошибке в атрибутах <i>span</i>.
             </li>
           </ul>
-          <p>Также я подсветил сам спан - так он выглядит в Grafana</p>
+          <p>Также здесь видно, развернутый спан со всей метаинформацией</p>
           <p>
             <b>
               <i>Переход:</i>
@@ -51,7 +52,7 @@ export default function ExamplesError() {
 
         <RectMagnifier
           targetRef={() => targetRef}
-          startDelayMs={10000}
+          startDelayMs={15000}
           imgSelector="img"
           blurOutside
           blurPx={2}
@@ -81,7 +82,7 @@ export default function ExamplesError() {
               h: 0.5,
               scale: 5,
               transitionMs: 800,
-              holdMs: 4000,
+              holdMs: 5000,
             },
             {
               x: -0.127,
@@ -92,7 +93,7 @@ export default function ExamplesError() {
               transitionMs: 800,
               holdMs: 5000,
             },
-            { hide: true, holdMs: 3000 },
+            { hide: true, holdMs: 5000 },
           ]}
           className="rounded-lg ring-2 ring-red-400/80 shadow-[0_0_0_2px_rgba(0,0,0,0.35)] bg-neutral-900/10"
         />

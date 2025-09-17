@@ -44,31 +44,64 @@ export default function TracingArch() {
 
     const $ = (s: string) => root.querySelector<HTMLElement>(s)!
     const add = (e: Element | null, c: string) => e && e.classList.add(c)
+    const rem = (e: Element | null, c: string) => e && e.classList.remove(c)
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
     // ваши константы
-    const T_SPAN = 500
+    const T_SPAN = 1300
     const T_SERVICE_GAP = 1400
     const T_AFTER = 1000
+    const T_PULSE = 650
+
+    // подготовка путей к анимации dashoffset
+    function primePath(path: SVGPathElement) {
+      const L = path.getTotalLength()
+      path.style.setProperty('--len', `${L}`)
+      path.style.setProperty('--off', `${L}`)
+      rem(path, 'send')
+      void path.getBoundingClientRect()
+    }
+
+    async function pulseUplink(id: string) {
+      await sleep(T_SPAN)
+      const path = document.getElementById(id) as SVGPathElement | null
+      if (!path) return
+      primePath(path)
+      add(path, 'send')
+      path.style.transition = `stroke-dashoffset ${T_PULSE}ms linear`
+      path.style.setProperty('--off', '0')
+    }
 
     function resetAll() {
       root
-        .querySelectorAll('.active,.send')
+        .querySelectorAll('.send')
         .forEach((el) => el.classList.remove('active', 'send'))
       root
-        .querySelectorAll('.span-label')
+        .querySelectorAll(
+          '.span-label,.dot,.svc--a,.svc--b,.svc--c,.svc--collector'
+        )
         .forEach((el) => el.classList.remove('active'))
+      ;['uplink-a', 'uplink-b', 'uplink-c'].forEach((id) => {
+        const p = document.getElementById(id) as SVGPathElement | null
+        if (p) {
+          p.style.removeProperty('--len')
+          p.style.removeProperty('--off')
+          p.style.transition = ''
+        }
+      })
     }
 
     async function run() {
       while (running && !disposed) {
         resetAll()
 
-        await sleep(T_SPAN * 3)
+        await sleep(T_SPAN)
 
-        // A
+        add($('.svc--collector'), 'active')
+
+        // === A ===
         add($('.svc--a'), 'active')
-        await sleep(T_SPAN * 2)
+        await sleep(T_SPAN)
         if (!running || disposed) break
         add($('.svc--a .dot.a1'), 'active')
         add($('.svc--a .label.a1'), 'active')
@@ -77,12 +110,15 @@ export default function TracingArch() {
         add($('.svc--a .dot.a2'), 'active')
         add($('.svc--a .label.a2'), 'active')
 
+        // экспорт из A → Collector (uplink-a)
+        await pulseUplink('uplink-a')
+
         await sleep(T_SERVICE_GAP)
         if (!running || disposed) break
 
-        // B
+        // === B ===
         add($('.svc--b'), 'active')
-        await sleep(T_SPAN * 2)
+        await sleep(T_SPAN)
         if (!running || disposed) break
         add($('.svc--b .dot.b1'), 'active')
         add($('.svc--b .label.b1'), 'active')
@@ -91,12 +127,15 @@ export default function TracingArch() {
         add($('.svc--b .dot.b2'), 'active')
         add($('.svc--b .label.b2'), 'active')
 
+        // экспорт из B → Collector (uplink-b)
+        await pulseUplink('uplink-b')
+
         await sleep(T_SERVICE_GAP)
         if (!running || disposed) break
 
-        // C
+        // === C ===
         add($('.svc--c'), 'active')
-        await sleep(T_SPAN * 2)
+        await sleep(T_SPAN)
         if (!running || disposed) break
         add($('.svc--c .dot.c1'), 'active')
         add($('.svc--c .label.c1'), 'active')
@@ -105,10 +144,8 @@ export default function TracingArch() {
         add($('.svc--c .dot.c2'), 'active')
         add($('.svc--c .label.c2'), 'active')
 
-        await sleep(T_SERVICE_GAP)
-        if (!running || disposed) break
-        add($('.svc--collector'), 'active')
-        add($('.collector-dot'), 'active')
+        // экспорт из C → Collector (uplink-c) и лёгкая подсветка коллектора
+        await pulseUplink('uplink-c')
 
         await sleep(T_AFTER * 1.5)
       }
@@ -129,21 +166,29 @@ export default function TracingArch() {
         <>
           <ul>
             <li>
-              В основе трейсинга лежит <i>traceID</i> — идентификатор запроса,
-              который передаётся через все сервисы.
+              Здесь я попытался заанимировать весь процесс, давайте разберем,
+              что здесь происходит.
             </li>
             <li>
-              Каждый сервис создаёт <i>span</i> — отрезок операции внутри{' '}
-              <i>trace</i> — и добавляет его в <b>контекст запроса</b>.
+              В основе трейсинга лежит <i>traceID</i> — это идентификатор
+              запроса, который передаётся через все сервисы.
             </li>
             <li>
-              Далее <b>контекст запроса</b> вместе с <i>traceID</i> передаётся в
-              следующий сервис. Этот процесс называется <i>пропагация</i>.
+              Сначала каждый сервис создаёт <i>span</i> — это{' '}
+              <i>отрезок операции</i> внутри <i>trace</i>.
+            </li>
+            <li>Спаны батчами отправляются в коллектор</li>
+            <li>
+              <p>
+                Перед вызовом следующего сервиса, в <b>контекст запроса</b>,
+                добавляется <i>TraceID</i> и <i>SpanID</i> вызывающей функции
+              </p>
+              Затем контекст передаётся по цепочке. Этот процесс называется{' '}
+              <i>пропагация</i>.
             </li>
             <li>
-              В результате <i>span-ы</i> со всех сервисов формируют цепочку
-              запроса. Эта цепочка с общим <i>traceID</i> отправляется в
-              коллектор, который агрегирует и сохраняет её как единый трейс.
+              В результате <i>span-ы</i> со всех сервисов агрегируются в
+              коллекторе, который сохраняет все как единый трейс.
             </li>
           </ul>
           <p>
@@ -162,7 +207,7 @@ export default function TracingArch() {
           role="img"
           aria-label="Distributed tracing flow"
         >
-          {/* ===== СЕРВИС A ===== */}
+          {/* <!-- ===== СЕРВИС A ===== --> */}
           <g class="svc svc--a" transform="translate(40,200)">
             <rect
               class="svc-frame a"
@@ -175,8 +220,6 @@ export default function TracingArch() {
             <text class="svc-title" x="0" y="-20">
               SERVICE A
             </text>
-
-            {/* точки-спаны: по 2 на сервис */}
             <circle class="dot a1" cx="85" cy="110" r="7" />
             <text
               class="span-label label a1"
@@ -184,7 +227,7 @@ export default function TracingArch() {
               y="90"
               text-anchor="middle"
             >
-              spanID
+              spanID_1
             </text>
             <circle class="dot a2" cx="195" cy="110" r="7" />
             <text
@@ -193,26 +236,30 @@ export default function TracingArch() {
               y="90"
               text-anchor="middle"
             >
-              spanID
+              spanID_2
             </text>
-
-            {/* traceID над рамкой — появляется при активации сервиса */}
             <g class="trace-badge">
               <rect
                 class="badge"
-                x="70"
-                y="-80"
-                width="140"
-                height="28"
+                x="60"
+                y="212"
+                width="160"
+                height="48"
                 rx="12"
               />
-              <text class="badge-text" x="140" y="-62" text-anchor="middle">
-                traceID
+              <text class="badge-text" x="140" y="230" text-anchor="start">
+                <tspan x="70" dy="1">
+                  traceID
+                </tspan>
+                <tspan x="70" dy="1.5em">
+                  parent_span=
+                </tspan>
+                <tspan class="null">NULL</tspan>
               </text>
             </g>
           </g>
 
-          {/* ===== СЕРВИС B ===== */}
+          {/* <!-- ===== СЕРВИС B ===== --> */}
           <g class="svc svc--b" transform="translate(372,200)">
             <rect
               class="svc-frame b"
@@ -225,7 +272,6 @@ export default function TracingArch() {
             <text class="svc-title" x="0" y="-20">
               SERVICE B
             </text>
-
             <circle class="dot b1" cx="85" cy="110" r="7" />
             <text
               class="span-label label b1"
@@ -233,7 +279,7 @@ export default function TracingArch() {
               y="90"
               text-anchor="middle"
             >
-              spanID
+              spanID_3
             </text>
             <circle class="dot b2" cx="195" cy="110" r="7" />
             <text
@@ -242,25 +288,30 @@ export default function TracingArch() {
               y="90"
               text-anchor="middle"
             >
-              spanID
+              spanID_4
             </text>
-
             <g class="trace-badge">
               <rect
                 class="badge"
-                x="70"
-                y="-80"
-                width="140"
-                height="28"
+                x="47"
+                y="212"
+                width="190"
+                height="48"
                 rx="12"
               />
-              <text class="badge-text" x="140" y="-62" text-anchor="middle">
-                traceID
+              <text class="badge-text" x="140" y="230" text-anchor="start">
+                <tspan x="57" dy="1">
+                  traceID
+                </tspan>
+                <tspan x="57" dy="1.5em">
+                  parent_span=
+                </tspan>
+                <tspan class="parent-val">spanID_2</tspan>
               </text>
             </g>
           </g>
 
-          {/* ===== СЕРВИС C ===== */}
+          {/* <!-- ===== СЕРВИС C ===== --> */}
           <g class="svc svc--c" transform="translate(704,200)">
             <rect
               class="svc-frame c"
@@ -273,7 +324,6 @@ export default function TracingArch() {
             <text class="svc-title" x="0" y="-20">
               SERVICE C
             </text>
-
             <circle class="dot c1" cx="85" cy="110" r="7" />
             <text
               class="span-label label c1"
@@ -281,7 +331,7 @@ export default function TracingArch() {
               y="90"
               text-anchor="middle"
             >
-              spanID
+              spanID_5
             </text>
             <circle class="dot c2" cx="195" cy="110" r="7" />
             <text
@@ -290,29 +340,33 @@ export default function TracingArch() {
               y="90"
               text-anchor="middle"
             >
-              spanID
+              spanID_6
             </text>
-
             <g class="trace-badge">
               <rect
                 class="badge"
-                x="70"
-                y="-80"
-                width="140"
-                height="28"
+                x="47"
+                y="212"
+                width="190"
+                height="48"
                 rx="12"
               />
-              <text class="badge-text" x="140" y="-62" text-anchor="middle">
-                traceID
+              <text class="badge-text" x="140" y="230" text-anchor="start">
+                <tspan x="57" dy="1">
+                  traceID
+                </tspan>
+                <tspan x="57" dy="1.5em">
+                  parent_span=
+                </tspan>
+                <tspan class="parent-val">spanID_4</tspan>
               </text>
             </g>
           </g>
 
-          {/* ===== ФРАГМЕНТ 2: COLLECTOR сверху справа от Service C ===== */}
-
+          {/* <!-- ===== COLLECTOR В ЦЕНТРЕ ===== --> */}
           <g
             class="svc svc--collector collector-fragment"
-            transform="translate(828,5)"
+            transform="translate(434,18)"
           >
             <rect
               class="svc-frame collector"
@@ -325,13 +379,17 @@ export default function TracingArch() {
             <text
               class="svc-title collector-title"
               x="78"
-              y="32"
+              y="50"
               text-anchor="middle"
             >
               COLLECTOR
             </text>
-            <circle class="dot collector-dot" cx="77" cy="55" r="7" />
           </g>
+
+          {/* <!-- ===== УГЛОВЫЕ UPLINK-СТРЕЛКИ A/B/C → COLLECTOR ===== --> */}
+          <path id="uplink-a" class="uplink" d="M180,198 L180,65 L432,65" />
+          <path id="uplink-b" class="uplink" d="M512,198 L512,108" />
+          <path id="uplink-c" class="uplink" d="M844,198 L844,65 L592,65" />
         </svg>
       </div>
     </SlideFrame>

@@ -8,15 +8,14 @@ export default function IntegrationSpans() {
       notes={
         <>
           <p>
-            <i>span</i> создается в начале функции и закрыватся в конце. При
-            необходимости можно добавить атрибуты, и они появятся в ui. Например{' '}
-            <code>user.id</code>.
+            <i>span</i> создается в начале функции и обязательно закрыватся в
+            конце.
           </p>
         </>
       }
     >
       <pre class="rounded-lg border border-zinc-600/60 bg-zinc-900/70 p-4 overflow-x-auto text-sky-100 text-sm text-left  my-0">
-        <code data-trim data-line-numbers="4-7,11-14" class="language-go">
+        <code data-trim data-line-numbers="4-7" class="language-go">
           {`var tr = otel.Tracer("payments-api")
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -25,14 +24,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	)
 	defer span.End()
 
-        //...
-
-	span.SetAttributes( // опционально
-		attribute.String("user.id", userID(r)),
-		attribute.String("route", "/payments"),
-	)
-
-	//...
+	//код функции
 }`}
         </code>
       </pre>

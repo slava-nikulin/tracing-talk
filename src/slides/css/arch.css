@@ -1,11 +1,55 @@
+@property --glow-r1 {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --glow-r2 {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --glow-c1 {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: transparent;
+}
+
+@property --glow-c2 {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: transparent;
+}
+
 :root {
-  --c-a: hsl(190 100% 70%);
+  --c-a: hsla(0, 90%, 73%, 0.917);
   --c-b: hsl(275 100% 70%);
-  --c-c: hsl(113 100% 70%);
+  --c-c: hsl(113, 100%, 80%);
   --c-collector: hsl(48 100% 60%); /* жёлтый */
   --badge: hsl(195 100% 82%);
   --dim: #bfc8d2;
   --ink: #e6eef6;
+}
+
+.svc--a {
+  --svc: var(--c-a);
+  --svc-prev: var(--dim);
+}
+
+/* у A нет родителя */
+.svc--b {
+  --svc: var(--c-b);
+  --svc-prev: var(--c-a);
+}
+
+.svc--c {
+  --svc: var(--c-c);
+  --svc-prev: var(--c-b);
+}
+
+.svc--collector {
+  --svc: var(--c-collector);
 }
 
 /* сопоставление цвета сервиса в --svc (касается рамки, точек, подписей) */
@@ -30,6 +74,7 @@
   --svc: var(--c-collector);
 }
 
+
 /* заголовки блоков */
 .svc-title {
   font: 700 14px/1 'EuropaNuova', ui-sans-serif, system-ui;
@@ -38,21 +83,35 @@
   fill: var(--dim);
 }
 
+
 /* рамки: базовое и активное состояние (единые для сервисов и коллектора) */
 .svc-frame {
+  --glow-r1: 0px;
+    --glow-r2: 0px;
+    --glow-c1: transparent;
+    --glow-c2: transparent;
   fill: rgba(8, 13, 20, 0.52);
   stroke-width: 3;
-  stroke: #203040;
-  filter: drop-shadow(0 0 0 transparent);
-  transition: filter 0.25s ease, stroke 0.25s ease, opacity 0.25s;
-  opacity: 0.75;
-  will-change: filter, stroke, opacity;
-}
-.svc.active .svc-frame {
   stroke: var(--svc);
+  filter: drop-shadow(0 0 var(--glow-r1) var(--glow-c1)) drop-shadow(0 0 var(--glow-r2) var(--glow-c2));
+  transition: filter 0.25s ease, stroke 0.25s ease, opacity 0.25s;
+  opacity: 0.25;
+  transition:
+      --glow-r1 250ms ease,
+      --glow-r2 250ms ease,
+      --glow-c1 250ms ease,
+      --glow-c2 250ms ease,
+      opacity 250ms ease;
+  will-change: filter, opacity;
+}
+
+.svc.active .svc-frame {
   opacity: 1;
-  filter: drop-shadow(0 0 8px color-mix(in oklab, var(--svc) 60%, transparent))
-    drop-shadow(0 0 22px color-mix(in oklab, var(--svc) 40%, transparent));
+  --glow-r1: 8px;
+    --glow-r2: 22px;
+    /* color-mix в Oklab даёт предсказуемую прозрачность/тон */
+    --glow-c1: color-mix(in oklab, var(--svc) 60%, transparent);
+    --glow-c2: color-mix(in oklab, var(--svc) 40%, transparent);
 }
 
 /* точки-спаны */
@@ -90,20 +149,46 @@
   transform: translateY(0);
 }
 
-/* traceID-бейдж над рамкой только у активного блока */
 .trace-badge {
   opacity: 0;
   transform: translateY(-6px);
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
 .svc .trace-badge {
-  transform: translateY(-16px);
+  opacity: 0;
+  transform: translate(var(--badge-enter-x, 0), var(--badge-enter-y, 0));
   transform-box: fill-box;
   transform-origin: center;
+  transition: opacity .35s ease, transform .35s ease;
 }
+
+.svc--a .trace-badge {
+  --badge-enter-x: 0px;
+  --badge-enter-y: -16px;
+}
+
+.svc--b .trace-badge,
+.svc--c .trace-badge {
+  --badge-enter-x: -100px;
+  --badge-enter-y: 0px;
+}
+
+/* «прислали слева» */
 .svc.active .trace-badge {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate(0, 0);
+}
+
+/* 3) Подсветка значения parent_span цветом предыдущего сервиса */
+.badge-text .parent-val {
+  fill: color-mix(in oklab, var(--svc-prev) 85%, white 15%);
+  font-weight: 900;
+  letter-spacing: .03em;
+}
+
+/* Необязательно: серый для NULL у корня */
+.badge-text .null {
+  fill: color-mix(in oklab, var(--dim) 90%, white 10%);
 }
 
 .badge {
@@ -114,6 +199,7 @@
     0 0 8px color-mix(in oklab, var(--badge) 55%, transparent)
   );
 }
+
 .badge-text {
   font: 800 12px/1 'EuropaNuova', ui-sans-serif, system-ui;
   fill: color-mix(in oklab, var(--badge) 85%, white 15%);
@@ -124,4 +210,44 @@
 /* заголовок коллектора можно сделать ярче */
 .svc--collector .svc-title {
   fill: #e9f4ff;
+}
+
+/* цвет для каждой uplink через currentColor */
+#uplink-a {
+  color: var(--c-a);
+}
+
+#uplink-b {
+  color: var(--c-b);
+}
+
+#uplink-c {
+  color: var(--c-c);
+}
+
+/* базовый стиль стрелок */
+.uplink {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  opacity: 0.25;
+  transition: opacity 0.2s ease;
+}
+
+/* активный «пульс» экспорта: будем анимировать dashoffset */
+.uplink.send {
+  opacity: 1;
+}
+
+/* когда у пути проставлен --len, эта анимация сработает плавно */
+.uplink {
+  stroke-dasharray: var(--len, 0);
+  stroke-dashoffset: var(--off, 0);
+}
+
+/* небольшая подсветка коллектора при активности */
+.svc--collector.active .svc-frame {
+  stroke: var(--c-collector);
+  opacity: 1;
+  filter: drop-shadow(0 0 8px color-mix(in oklab, var(--c-collector) 60%, transparent)) drop-shadow(0 0 22px color-mix(in oklab, var(--c-collector) 40%, transparent));
 }

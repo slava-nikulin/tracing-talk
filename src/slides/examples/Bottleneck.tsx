@@ -11,8 +11,8 @@ export default function Bottleneck() {
       notes={
         <>
           <p>
-            Здесь также видна цепочка вызовов. Ошибки нет, но заметна задержка.
-            Найти проблемное место просто:
+            Здесь также видна цепочка вызовов. Ошибки нет, но видна задержка.
+            Найти ее также очень просто:
           </p>
           <ul>
             <li>
@@ -53,7 +53,7 @@ export default function Bottleneck() {
               h: 0.2,
               scale: 5,
               transitionMs: 800,
-              holdMs: 2000,
+              holdMs: 3000,
             },
             {
               x: -0.13,
@@ -62,7 +62,7 @@ export default function Bottleneck() {
               h: 0.2,
               scale: 5,
               transitionMs: 800,
-              holdMs: 2000,
+              holdMs: 3000,
             },
             {
               x: 0.5,
@@ -71,10 +71,10 @@ export default function Bottleneck() {
               h: 0.25,
               scale: 3,
               transitionMs: 800,
-              holdMs: 2000,
+              holdMs: 3000,
             },
 
-            { hide: true, holdMs: 2000 },
+            { hide: true, holdMs: 5000 },
           ]}
           className="rounded-lg ring-2 ring-red-400/80 shadow-[0_0_0_2px_rgba(0,0,0,0.35)] bg-neutral-900/10"
         />

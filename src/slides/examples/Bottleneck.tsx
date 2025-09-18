@@ -23,6 +23,7 @@ export default function Bottleneck() {
             </li>
             <li>и время выполнения.</li>
           </ul>
+          И ещё пример
         </>
       }
     >

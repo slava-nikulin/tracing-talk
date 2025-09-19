@@ -33,7 +33,22 @@ type Props = {
   startDelayMs?: number // задержка перед стартом после показа секции
 }
 
+function getFsMount(): HTMLElement {
+  return (document.fullscreenElement as HTMLElement) || document.body
+}
+
 export default function RectMagnifier(props: Props): JSX.Element {
+  const [portalMount, setPortalMount] = createSignal<HTMLElement>(getFsMount())
+  const updatePortalMount = () => setPortalMount(getFsMount())
+
+  onMount(() => {
+    document.addEventListener('fullscreenchange', updatePortalMount)
+    updatePortalMount()
+    onCleanup(() => {
+      document.removeEventListener('fullscreenchange', updatePortalMount)
+    })
+  })
+
   // DOM
   let rootEl: HTMLDivElement | null = null
   let frameEl: HTMLDivElement | null = null
@@ -161,6 +176,11 @@ export default function RectMagnifier(props: Props): JSX.Element {
     return { tx: cxFr - s * cxImg, ty: cyFr - s * cyImg }
   }
 
+  function getMountRect() {
+    const mountEl = portalMount()
+    return mountEl.getBoundingClientRect()
+  }
+
   function applyVisibleStep(step: Step) {
     if (!baseImg || !frameEl || !imgInFrameEl) return
     const a = measureImageArea(baseImg)
@@ -177,6 +197,10 @@ export default function RectMagnifier(props: Props): JSX.Element {
       h = hR * a.contentH
     let fx = a.contentLeft + x,
       fy = a.contentTop + y
+
+    const mountRect = getMountRect()
+    fx -= mountRect.left
+    fy -= mountRect.top
 
     if (fx < 0) {
       fx = 3
@@ -329,12 +353,15 @@ export default function RectMagnifier(props: Props): JSX.Element {
   })
 
   return (
-    <Portal mount={document.body}>
+    <Portal mount={portalMount()}>
       <div
         ref={(el) => (rootEl = el)}
         style={{
-          position: 'fixed',
-          inset: '0',
+          position: 'absolute',
+          left: '0',
+          top: '0',
+          right: '0',
+          bottom: '0',
           'pointer-events': 'none',
           'z-index': 2147483647,
           overflow: 'visible',

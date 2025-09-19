@@ -29,6 +29,7 @@ export default function Tools() {
           </ul>
           У нас в команде для визуализации используется Grafana, а для хранения
           - Tempo
+          <br />
           <b>
             <i>Переход:</i>
           </b>{' '}

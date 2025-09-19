@@ -2,8 +2,15 @@ import { onCleanup, onMount } from 'solid-js'
 import SlideFrame from '../components/SlideFrame'
 import './css/arch.css'
 
+const T_SPAN = 1300
+const T_SERVICE_GAP = 1400
+const T_AFTER = 1000
+
 export default function TracingArch() {
   let root!: HTMLDivElement
+
+  const add = (e: Element | null, c: string) => e && e.classList.add(c)
+  const $ = (s: string) => root.querySelector<HTMLElement>(s)!
 
   onMount(() => {
     const t = root
@@ -13,52 +20,40 @@ export default function TracingArch() {
 
     let disposed = false
     let running = false
+    let runToken = 0
 
-    const start = () => {
-      if (running || disposed) return
-      running = true
-      run()
+    const timeouts = new Set<number>()
+    const rafs = new Set<number>()
+
+    const addTimeout = (cb: () => void, ms: number) => {
+      const id = window.setTimeout(() => {
+        timeouts.delete(id)
+        cb()
+      }, ms)
+      timeouts.add(id)
+      return id
     }
-    const stopAll = () => {
-      if (!running) return
-      running = false
-      resetAll()
+    const addRAF = (cb: FrameRequestCallback) => {
+      const id = window.requestAnimationFrame((ts) => {
+        rafs.delete(id)
+        cb(ts)
+      })
+      rafs.add(id)
+      return id
+    }
+    const clearAllAsync = () => {
+      timeouts.forEach((id) => window.clearTimeout(id))
+      timeouts.clear()
+      rafs.forEach((id) => window.cancelAnimationFrame(id))
+      rafs.clear()
     }
 
-    const check = (): boolean => {
-      const visible =
-        section.classList.contains('present') &&
-        !section.hasAttribute('hidden') &&
-        section.getAttribute('aria-hidden') !== 'true'
-      if (visible) start()
-      else stopAll()
-      return visible
-    }
-
-    const mo = new MutationObserver(() => check())
-    mo.observe(section, {
-      attributes: true,
-      attributeFilter: ['hidden', 'aria-hidden', 'class'],
-    })
-    check()
-
-    const $ = (s: string) => root.querySelector<HTMLElement>(s)!
-    const add = (e: Element | null, c: string) => e && e.classList.add(c)
-    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
-
-    // ваши константы
-    const T_SPAN = 1300
-    const T_SERVICE_GAP = 1400
-    const T_AFTER = 1000
-
-    async function pulseUplink(id: string, durMs = 3000) {
-      await sleep(T_SPAN) // твоя синхронизация
-      const g = document.getElementById(id)
-      if (!g) return
-      g.style.setProperty('--dur', `${durMs}ms`)
-      // один кадр, чтобы браузер зафиксировал стартовые стили (offset=1)
-      requestAnimationFrame(() => g.classList.add('send'))
-    }
+    const sleep = (ms: number, token: number) =>
+      new Promise<void>((resolve) => {
+        addTimeout(() => {
+          if (!disposed && running && token === runToken) resolve()
+        }, ms)
+      })
 
     function resetAll() {
       root
@@ -76,70 +71,140 @@ export default function TracingArch() {
       })
     }
 
-    async function run() {
-      while (running && !disposed) {
+    const start = () => {
+      if (running || disposed) return
+      running = true
+      runToken++
+      run(runToken)
+    }
+    const stopAll = () => {
+      if (!running) return
+      running = false
+      clearAllAsync()
+      resetAll()
+    }
+
+    async function pulseUplink(id: string, durMs = 3000, token: number) {
+      await sleep(T_SPAN, token)
+      if (!running || disposed || token !== runToken) return
+      const g = document.getElementById(id)
+      if (!g) return
+      g.style.setProperty('--dur', `${durMs}ms`)
+      addRAF(() => {
+        if (!running || disposed || token !== runToken) return
+        g.classList.add('send')
+      })
+    }
+
+    async function run(token: number) {
+      while (running && !disposed && token === runToken) {
         resetAll()
 
-        await sleep(T_SPAN)
+        await sleep(T_SPAN, token)
+        if (!running || disposed || token !== runToken) break
 
         add($('.svc--collector'), 'active')
 
         // === A ===
         add($('.svc--a'), 'active')
-        await sleep(T_SPAN)
-        if (!running || disposed) break
+        await sleep(T_SPAN, token)
+        if (!running || disposed || token !== runToken) break
         add($('.svc--a .dot.a1'), 'active')
         add($('.svc--a .label.a1'), 'active')
-        await sleep(T_SPAN)
-        if (!running || disposed) break
+        await sleep(T_SPAN, token)
+        if (!running || disposed || token !== runToken) break
         add($('.svc--a .dot.a2'), 'active')
         add($('.svc--a .label.a2'), 'active')
+        await pulseUplink('uplink-a', 800, token)
 
-        // экспорт из A → Collector (uplink-a)
-        await pulseUplink('uplink-a', 800)
-
-        await sleep(T_SERVICE_GAP)
-        if (!running || disposed) break
+        await sleep(T_SERVICE_GAP, token)
+        if (!running || disposed || token !== runToken) break
 
         // === B ===
         add($('.svc--b'), 'active')
-        await sleep(T_SPAN)
-        if (!running || disposed) break
+        await sleep(T_SPAN, token)
+        if (!running || disposed || token !== runToken) break
         add($('.svc--b .dot.b1'), 'active')
         add($('.svc--b .label.b1'), 'active')
-        await sleep(T_SPAN)
-        if (!running || disposed) break
+        await sleep(T_SPAN, token)
+        if (!running || disposed || token !== runToken) break
         add($('.svc--b .dot.b2'), 'active')
         add($('.svc--b .label.b2'), 'active')
+        await pulseUplink('uplink-b', 400, token)
 
-        // экспорт из B → Collector (uplink-b)
-        await pulseUplink('uplink-b', 400)
-
-        await sleep(T_SERVICE_GAP)
-        if (!running || disposed) break
+        await sleep(T_SERVICE_GAP, token)
+        if (!running || disposed || token !== runToken) break
 
         // === C ===
         add($('.svc--c'), 'active')
-        await sleep(T_SPAN)
-        if (!running || disposed) break
+        await sleep(T_SPAN, token)
+        if (!running || disposed || token !== runToken) break
         add($('.svc--c .dot.c1'), 'active')
         add($('.svc--c .label.c1'), 'active')
-        await sleep(T_SPAN)
-        if (!running || disposed) break
+        await sleep(T_SPAN, token)
+        if (!running || disposed || token !== runToken) break
         add($('.svc--c .dot.c2'), 'active')
         add($('.svc--c .label.c2'), 'active')
+        await pulseUplink('uplink-c', 800, token)
 
-        // экспорт из C → Collector (uplink-c) и лёгкая подсветка коллектора
-        await pulseUplink('uplink-c', 800)
-
-        await sleep(T_AFTER * 1.5)
+        await sleep(T_AFTER * 1.5, token)
       }
     }
+
+    // ваш resetAll без изменений
+
+    // видимость слайда (обновлено)
+    const check = (): boolean => {
+      const visible =
+        section.classList.contains('present') &&
+        !section.hasAttribute('hidden') &&
+        section.getAttribute('aria-hidden') !== 'true'
+      if (visible) start()
+      else stopAll()
+      return visible
+    }
+
+    // дебаунсируем частые мутации во время переходов
+    let checkRAF = 0
+    const scheduleCheck = () => {
+      if (checkRAF) return
+      checkRAF = addRAF(() => {
+        checkRAF = 0
+        check()
+      })
+    }
+
+    const mo = new MutationObserver(() => scheduleCheck())
+    mo.observe(section, {
+      attributes: true,
+      attributeFilter: ['hidden', 'aria-hidden', 'class'],
+    })
+    check()
+
+    // Reveal события (если доступен глобальный Reveal)
+    if ((window as any).Reveal?.on) {
+      const onSlideEnd = (e: any) => {
+        if (e.currentSlide === section) start()
+        else stopAll()
+      }
+      ;(window as any).Reveal.on('slidetransitionend', onSlideEnd)
+      onCleanup(() =>
+        (window as any).Reveal.off?.('slidetransitionend', onSlideEnd)
+      )
+    }
+
+    // Пауза при скрытии вкладки
+    const onVis = () => {
+      if (document.hidden) stopAll()
+      else check()
+    }
+    document.addEventListener('visibilitychange', onVis)
 
     onCleanup(() => {
       disposed = true
       stopAll()
       mo.disconnect()
+      document.removeEventListener('visibilitychange', onVis)
     })
   })
 

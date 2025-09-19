@@ -23,6 +23,7 @@ export default function UseCases() {
             </li>
           </ul>
           Все это экономит время и деньги компании.
+          <br />
           <b>
             <i>Переход:</i>
           </b>{' '}

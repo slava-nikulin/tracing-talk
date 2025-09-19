@@ -27,6 +27,8 @@ export default function Tools() {
               <i>Jaeger UI</i>.
             </li>
           </ul>
+          У нас в команде для визуализации используется Grafana, а для хранения
+          - Tempo
           <b>
             <i>Переход:</i>
           </b>{' '}
